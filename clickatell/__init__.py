@@ -5,6 +5,20 @@ from .exception import ClickatellError
 
 class Transport:
     endpoint = "api.clickatell.com"
+    status = {
+        "001": "The message ID is incorrect or reporting is delayed.",
+        "002": "The message could not be delivered and has been queued for attempted redelivery.",
+        "003": "Delivered to the upstream gateway or network (delivered to the recipient).",
+        "004": "Confirmation of receipt on the handset of the recipient.",
+        "005": "There was an error with the message, probably caused by the content of the message itself.",
+        "006": "The message was terminated by a user (stop message command) or by our staff.",
+        "007": "An error occurred delivering the message to the handset. 008 0x008 OK Message received by gateway.",
+        "009": "The routing gateway or network has had an error routing the message.",
+        "010": "Message has expired before we were able to deliver it to the upstream gateway. No charge applies.",
+        "011": "Message has been queued at the gateway for delivery at a later time (delayed delivery).",
+        "012": "The message cannot be delivered due to a lack of funds in your account. Please re-purchase credits.",
+        "014": "Maximum MT limit exceeded The allowable amount for MT messaging has been exceeded."
+    }
 
     def __init__(self, secure=False):
         self.secure = secure
@@ -23,7 +37,7 @@ class Transport:
 
             try:
                 error = row['ERR'].split(',')
-            except IndexError:
+            except KeyError:
                 pass
             else:
                 row['code'] = error[0] if len(error) == 2 else 0
@@ -44,10 +58,18 @@ class Transport:
 
     def request(self, action, data={}, headers={}, method='GET'):
         http = httplib2.Http()
+        body = urllib.urlencode(data)
         url = ('https' if self.secure else 'http') + '://' + self.endpoint
         url = url + '/' + action
-        resp, content = http.request(url, method, headers=headers, body=urllib.urlencode(data))
+        url = (url + '?' + body) if (method == 'GET') else url
+        resp, content = http.request(url, method, headers=headers, body=body)
         return dict(resp.items() + { 'body': content }.items())
+
+    def getStatus(self, status):
+        try:
+            return self.status[status]
+        except Exception:
+            return False
 
     def sendMessage(self, to, message, extra={}):
         raise NotImplementedError()
