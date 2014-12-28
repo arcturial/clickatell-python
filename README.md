@@ -1,6 +1,8 @@
 Clickatell Python Library
 ================================
 
+Master: [![Build Status](https://secure.travis-ci.org/arcturial/clickatell-python.png?branch=master)](http://travis-ci.org/arcturial/clickatell-python)
+
 This library allows easy access to connecting the [Clickatell's](http://www.clickatell.com) different messenging API's.
 
 1. Installation
