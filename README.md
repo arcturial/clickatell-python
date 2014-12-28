@@ -1,4 +1,4 @@
-Clickatell SMS Messenger Python Library
+Clickatell Python Library
 ================================
 
 This library allows easy access to connecting the [Clickatell's](http://www.clickatell.com) different messenging API's.
