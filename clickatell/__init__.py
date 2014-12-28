@@ -46,7 +46,7 @@ class Transport:
         values = []
 
         for entry in args:
-            values = values + entry.items()
+            values = values + list(entry.items())
 
         return dict(values)
 
