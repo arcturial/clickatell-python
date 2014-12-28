@@ -1,9 +1,15 @@
 import httplib2
 import urllib
+import json
 import re
 from .exception import ClickatellError
 
 class Transport:
+    """
+    Abstract representation of a transport class. Defines
+    the supported API methods
+    """
+
     endpoint = "api.clickatell.com"
     status = {
         "001": "The message ID is incorrect or reporting is delayed.",
@@ -21,10 +27,39 @@ class Transport:
     }
 
     def __init__(self, secure=False):
+        """
+        Construct a new transportation instance.
+
+        :param boolean secure: Should we try and use a secure connection
+        """
         self.secure = secure
         pass
 
+    def merge(self, *args):
+        """
+        Merge multiple dictionary objects into one.
+
+        :param variadic args: Multiple dictionary items
+
+        :return dict
+        """
+        values = []
+
+        for entry in args:
+            values = values + entry.items()
+
+        return dict(values)
+
     def parseLegacy(self, response):
+        """
+        Parse a legacy response and try and catch any errors. If we have multiple
+        responses we wont catch any exceptions, we will return the errors
+        row by row
+
+        :param dict response: The response string returned from request()
+
+        :return Returns a dictionary or a list (list for multiple responses)
+        """
         lines = response['body'].strip('\n').split('\n')
         result = []
 
@@ -54,37 +89,113 @@ class Transport:
         return result if len(result) > 1 else result[0]
 
     def parseRest(self, response):
-        pass
+        """
+        Parse a REST response. If the response contains an error field, we will
+        raise it as an exception.
+        """
+        body = json.loads(response['body'])
+
+        try:
+            error = body['error']['description']
+            code = body['error']['code']
+        except Exception:
+            return body['data']
+        else:
+            raise ClickatellError(error, code);
 
     def request(self, action, data={}, headers={}, method='GET'):
+        """
+        Run the HTTP request against the Clickatell API
+
+        :param str  action:     The API action
+        :param dict data:       The request parameters
+        :param dict headers:    The request headers (if any)
+        :param str  method:     The HTTP method
+
+        :return: The request response
+        """
         http = httplib2.Http()
         body = urllib.urlencode(data)
         url = ('https' if self.secure else 'http') + '://' + self.endpoint
         url = url + '/' + action
         url = (url + '?' + body) if (method == 'GET') else url
-        resp, content = http.request(url, method, headers=headers, body=body)
-        return dict(resp.items() + { 'body': content }.items())
+        resp, content = http.request(url, method, headers=headers, body=json.dumps(data))
+        return self.merge(resp, {'body': content})
 
     def getStatus(self, status):
+        """
+        Return the message status from the local diagnostic array. If the entry
+        is not found, we will return False
+
+        :return Return the diagnostic string or False
+        """
         try:
             return self.status[status]
         except Exception:
             return False
 
     def sendMessage(self, to, message, extra={}):
+        """
+        Send a message.
+
+        :param list     to:         The number you want to send to (list of strings, or one string)
+        :param string   message:    The message you want to send
+        :param dict     extra:      Any extra parameters (see Clickatell documentation)
+
+        :return dict
+        :raises NotImplementedError
+        """
         raise NotImplementedError()
 
     def getBalance(self):
+        """
+        Retrieve the user balance
+
+        :return dict
+        :raises NotImplementedError
+        """
         raise NotImplementedError()
 
     def stopMessage(self, apiMsgId):
+        """
+        Retrieve the user balance
+
+        :param str apiMsgId: The API message ID
+
+        :return dict
+        :raises NotImplementedError
+        """
         raise NotImplementedError()
 
     def queryMessage(self, apiMsgId):
+        """
+        Query a message status. Alias for getMessageCharge()
+
+        :param str apiMsgId: The API message ID
+
+        :return dict
+        :raises NotImplementedError
+        """
         raise NotImplementedError()
 
     def routeCoverage(self, msisdn):
+        """
+        Query coverage for a specific number
+
+        :param str msisdn: The number to check coverage
+
+        :return dict
+        :raises NotImplementedError
+        """
         raise NotImplementedError()
 
     def getMessageCharge(self, apiMsgId):
+        """
+        Query coverage for a specific number
+
+        :param str apiMsgId: The API message ID
+
+        :return dict
+        :raises NotImplementedError
+        """
         raise NotImplementedError()
