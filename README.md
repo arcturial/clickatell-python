@@ -8,7 +8,11 @@ This library allows easy access to connecting the [Clickatell's](http://www.clic
 1. Installation
 ------------------
 
-You can install this library via PIP as part of you requirements file. The package is called *clickatell*
+You can install this library via PIP as part of you requirements file.
+
+```
+pip install clickatell
+```
 
 [Clickatell Python PyPI](https://pypi.python.org/pypi?name=clickatell&version=0.0.1&:action=display)
 
