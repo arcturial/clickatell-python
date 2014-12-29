@@ -14,7 +14,6 @@ class Rest(Transport):
         """
         self.token = token
         Transport.__init__(self)
-        pass
 
     def request(self, action, data={}, headers={}, method='GET'):
         """

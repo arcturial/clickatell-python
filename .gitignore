@@ -1,3 +1,6 @@
 __pycache__
 *.pyc
 /stage.py
+*.egg
+*.egg-info
+/dist/
