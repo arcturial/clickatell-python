@@ -1,8 +1,7 @@
-import httplib2
-import urllib
 import json
 import re
 import platform
+import requests
 from .exception import ClickatellError
 
 class Transport:
@@ -61,7 +60,7 @@ class Transport:
 
         :return Returns a dictionary or a list (list for multiple responses)
         """
-        lines = str(response['body']).strip('\n').split('\n')
+        lines = response.strip('\n').split('\n')
         result = []
 
         for line in lines:
@@ -94,7 +93,7 @@ class Transport:
         Parse a REST response. If the response contains an error field, we will
         raise it as an exception.
         """
-        body = json.loads(response['body'])
+        body = json.loads(response)
 
         try:
             error = body['error']['description']
@@ -115,23 +114,23 @@ class Transport:
 
         :return: The request response
         """
-        http = httplib2.Http()
-
-        # Catch error and try using the python 3 syntax
-        try:
-            body = urllib.urlencode(data)
-        except Exception:
-            body = urllib.parse.urlencode(data)
+        url = ('https' if self.secure else 'http') + '://' + self.endpoint
+        url = url + '/' + action
 
         # Set the User-Agent
         userAgent = "".join(["ClickatellPython/0.0.3", " ", "httplib2", " ", "Python/", platform.python_version()])
         headers = self.merge({ "User-Agent": userAgent }, headers)
 
-        url = ('https' if self.secure else 'http') + '://' + self.endpoint
-        url = url + '/' + action
-        url = (url + '?' + body) if (method == 'GET') else url
-        resp, content = http.request(url, method, headers=headers, body=json.dumps(data))
-        return self.merge(resp, {'body': content})
+        try:
+            func = getattr(requests, method.lower())
+        except AttributeError:
+            raise Exception('HTTP method ' + method + ' unsupported.')
+
+        resp = func(url, params=data, data=json.dumps(data), headers=headers)
+
+        resp.encoding = 'utf-8'
+        content = resp.text
+        return content
 
     def getStatus(self, status):
         """

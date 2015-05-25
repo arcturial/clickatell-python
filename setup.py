@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="clickatell",
-    version="0.0.3",
+    version="0.0.2",
     author="Chris Brand",
     author_email="webmaster@cainsvault.com",
     keywords=["clickatell","sms"],
@@ -13,6 +13,6 @@ setup(
     description="Library for interacting with the Clickatell SMS Gateway",
     long_description=open("README.md").read(),
     install_requires=[
-        "httplib2",
+        "requests",
     ]
 )

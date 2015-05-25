@@ -8,12 +8,12 @@ import json
 class TransportTest(unittest.TestCase):
 
     def test_parseLegacyFailure(self):
-        response = {'body': 'ERR: Some exception'}
+        response = 'ERR: Some exception'
         transport = Transport()
         self.assertRaises(ClickatellError, lambda: transport.parseLegacy(response))
 
     def test_parseLegacyMultiFailure(self):
-        response = {'body': 'ERR: 301, Some Failure\nOK:12345'}
+        response = 'ERR: 301, Some Failure\nOK:12345'
         transport = Transport()
         result = transport.parseLegacy(response)
         self.assertTrue(len(result) == 2)
@@ -21,19 +21,19 @@ class TransportTest(unittest.TestCase):
         self.assertTrue(result[1]['OK'] == '12345')
 
     def test_parseLegacy(self):
-        response = {'body': 'OK: 1234 Test: 12345'}
+        response = 'OK: 1234 Test: 12345'
         transport = Transport()
         result = transport.parseLegacy(response)
         self.assertTrue(result['OK'] == '1234')
         self.assertTrue(result['Test'] == '12345')
 
     def test_parseRestFailure(self):
-        response = {'body': json.dumps({'error':{'description':'Error','code':'301'}})}
+        response = json.dumps({'error':{'description':'Error','code':'301'}})
         transport = Transport()
         self.assertRaises(ClickatellError, lambda: transport.parseRest(response))
 
     def test_parseRest(self):
-        response = {'body': json.dumps({'data':True})}
+        response = json.dumps({'data':True})
         transport = Transport()
         self.assertTrue(transport.parseRest(response))
 
@@ -47,14 +47,13 @@ class TransportTest(unittest.TestCase):
         self.assertTrue(merge['test2'] == 2)
         self.assertTrue(merge['test1'] == 1)
 
-    @mock.patch('httplib2.Http.request')
+    @mock.patch('requests.get')
     def test_request(self, mock_request):
-        mock_request.return_value = [{}, 'content']
         transport = Transport()
         transport.request('act')
         mock_request.assert_called_with(
-            'http://api.clickatell.com/act?',
-            'GET',
-            headers={'User-Agent': 'ClickatellPython/0.0.3 httplib2 Python/' + platform.python_version()},
-            body='{}'
+            'http://api.clickatell.com/act',
+            params={},
+            data='{}',
+            headers={'User-Agent': 'ClickatellPython/0.0.3 httplib2 Python/' + platform.python_version()}
         )
