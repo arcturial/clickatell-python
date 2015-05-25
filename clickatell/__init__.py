@@ -6,7 +6,7 @@ from .exception import ClickatellError
 try:
     import urllib
 except Exception:
-    import urllib.request as urllib
+    import urllib.parse as urllib
 
 class Transport:
     """
