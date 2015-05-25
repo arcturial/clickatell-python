@@ -1,8 +1,12 @@
 import httplib2
-import urllib
 import json
 import re
 from .exception import ClickatellError
+
+try:
+    import urllib
+except Exception:
+    import urllib.request as urllib
 
 class Transport:
     """
