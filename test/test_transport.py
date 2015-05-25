@@ -1,5 +1,6 @@
 import unittest
 import mock as mock
+import platform
 from clickatell import Transport
 from clickatell.exception import ClickatellError
 import json
@@ -51,4 +52,9 @@ class TransportTest(unittest.TestCase):
         mock_request.return_value = [{}, 'content']
         transport = Transport()
         transport.request('act')
-        mock_request.assert_called_with('http://api.clickatell.com/act?', 'GET', headers={}, body='{}')
+        mock_request.assert_called_with(
+            'http://api.clickatell.com/act?',
+            'GET',
+            headers={'User-Agent': 'ClickatellPython/0.0.2 httplib2 Python/' + platform.python_version()},
+            body='{}'
+        )
