@@ -1,4 +1,5 @@
 import unittest
+import mock as mock
 from clickatell import Transport
 from clickatell.exception import ClickatellError
 import json
@@ -44,3 +45,10 @@ class TransportTest(unittest.TestCase):
         self.assertTrue(merge['test'] == 2)
         self.assertTrue(merge['test2'] == 2)
         self.assertTrue(merge['test1'] == 1)
+
+    @mock.patch('httplib2.Http.request')
+    def test_request(self, mock_request):
+        mock_request.return_value = [{}, 'content']
+        transport = Transport()
+        transport.request('act')
+        mock_request.assert_called_with('http://api.clickatell.com/act?', 'GET', headers={}, body='{}')
