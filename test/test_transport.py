@@ -55,6 +55,6 @@ class TransportTest(unittest.TestCase):
         mock_request.assert_called_with(
             'http://api.clickatell.com/act?',
             'GET',
-            headers={'User-Agent': 'ClickatellPython/0.0.2 httplib2 Python/' + platform.python_version()},
+            headers={'User-Agent': 'ClickatellPython/0.0.3 httplib2 Python/' + platform.python_version()},
             body='{}'
         )
