@@ -1,12 +1,8 @@
 import httplib2
+import urllib
 import json
 import re
 from .exception import ClickatellError
-
-try:
-    import urllib
-except Exception:
-    import urllib.parse as urllib
 
 class Transport:
     """
@@ -119,7 +115,13 @@ class Transport:
         :return: The request response
         """
         http = httplib2.Http()
-        body = urllib.urlencode(data)
+
+        # Catch error and try using the python 3 syntax
+        try:
+            body = urllib.urlencode(data)
+        except Exception:
+            body = urllib.parse.urlencode(data)
+
         url = ('https' if self.secure else 'http') + '://' + self.endpoint
         url = url + '/' + action
         url = (url + '?' + body) if (method == 'GET') else url
