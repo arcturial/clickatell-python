@@ -61,7 +61,7 @@ class Transport:
 
         :return Returns a dictionary or a list (list for multiple responses)
         """
-        lines = response['body'].strip('\n').split('\n')
+        lines = str(response['body']).strip('\n').split('\n')
         result = []
 
         for line in lines:
