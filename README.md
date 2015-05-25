@@ -5,6 +5,8 @@ Master: [![Build Status](https://secure.travis-ci.org/arcturial/clickatell-pytho
 
 This library allows easy access to connecting the [Clickatell's](http://www.clickatell.com) different messenging API's.
 
+The library supports both version **2** and **3** of Python.
+
 1. Installation
 ------------------
 
