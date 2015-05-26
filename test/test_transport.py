@@ -57,3 +57,7 @@ class TransportTest(unittest.TestCase):
             data='{}',
             headers={'User-Agent': 'ClickatellPython/0.0.3 httplib2 Python/' + platform.python_version()}
         )
+
+
+if __name__ == '__main__':
+        unittest.main()
