@@ -119,8 +119,7 @@ class Transport:
         url = url + '/' + action
 
         # Set the User-Agent
-        userAgent = "".join(["ClickatellPython/0.0.3", " ", "httplib2", " ",
-                             "Python/", platform.python_version()])
+        userAgent = "".join(["ClickatellPython/0.0.3", " ", "Python/", platform.python_version()])
         headers = self.merge({ "User-Agent": userAgent }, headers)
 
         try:
