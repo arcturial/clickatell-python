@@ -35,7 +35,9 @@ class Http(Transport):
         provided by the user.
         """
         to = to if isinstance(to, list) else [to]
-        data = {'to': to, 'text': message}
+        to = [str(i) for i in to]
+
+        data = {'to': ','.join(to), 'text': message}
         data = self.merge(data, {'callback': 7, 'mo': 1}, extra)
 
         try:
@@ -44,7 +46,7 @@ class Http(Transport):
             # The error that gets catched here will only be raised if the request was for
             # one number only. We can safely assume we are only dealing with a single response
             # here.
-            content = {'error': e.message, 'errorCode': e.code, 'To': data['to'][0]}
+            content = {'error': e.message, 'errorCode': e.code, 'To': to[0]}
 
         # Force all responses to behave like a list, for consistency
         content = content if isinstance(content, list) else [content]

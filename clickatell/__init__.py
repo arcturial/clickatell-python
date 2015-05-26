@@ -128,7 +128,11 @@ class Transport:
             raise Exception('HTTP method ' + method + ' unsupported.')
 
         resp = func(url, params=data, data=json.dumps(data), headers=headers)
-        return resp.text.encode('utf-8')
+
+        # Set the coding before unwrapping the text
+        resp.encoding = 'utf-8'
+        content = resp.text
+        return content
 
     def getStatus(self, status):
         """

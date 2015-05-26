@@ -47,6 +47,12 @@ class TransportTest(unittest.TestCase):
         self.assertTrue(merge['test2'] == 2)
         self.assertTrue(merge['test1'] == 1)
 
+    def test_request_return(self):
+        transport = Transport()
+        text = transport.request('404')
+        # content is expected to return as a string
+        self.assertFalse(isinstance(text, bytes))
+
     @mock.patch('requests.get')
     def test_request(self, mock_request):
         transport = Transport()
