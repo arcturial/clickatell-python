@@ -55,14 +55,9 @@ class TransportTest(unittest.TestCase):
             'http://api.clickatell.com/act',
             params={},
             data='{}',
-<<<<<<< HEAD
-            headers={'User-Agent': 'ClickatellPython/0.1.0 httplib2 Python/' + platform.python_version()}
-        )
-=======
-            headers={'User-Agent': 'ClickatellPython/0.0.3 httplib2 Python/' + platform.python_version()}
+            headers={'User-Agent': 'ClickatellPython/0.1.0 Python/' + platform.python_version()}
         )
 
 
 if __name__ == '__main__':
         unittest.main()
->>>>>>> refactor-request
