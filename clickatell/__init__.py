@@ -60,11 +60,12 @@ class Transport:
 
         :return Returns a dictionary or a list (list for multiple responses)
         """
-        lines = response.strip('\n').split('\n')
+        lines = response.splitlines()
         result = []
+        pattern = re.compile('([A-Za-z]+):((.(?![A-Za-z]+:))*)')
 
         for line in lines:
-            matches = re.findall('([A-Za-z]+):((.(?![A-Za-z]+:))*)', line)
+            matches = pattern.findall(line)
             row = {}
 
             for match in matches:
@@ -118,7 +119,7 @@ class Transport:
         url = url + '/' + action
 
         # Set the User-Agent
-        userAgent = "".join(["ClickatellPython/0.1.0", " ", "httplib2", " ", "Python/", platform.python_version()])
+        userAgent = "".join(["ClickatellPython/0.1.0", " ", "Python/", platform.python_version()])
         headers = self.merge({ "User-Agent": userAgent }, headers)
 
         try:
@@ -127,10 +128,7 @@ class Transport:
             raise Exception('HTTP method ' + method + ' unsupported.')
 
         resp = func(url, params=data, data=json.dumps(data), headers=headers)
-
-        resp.encoding = 'utf-8'
-        content = resp.text
-        return content
+        return resp.text.encode('utf-8')
 
     def getStatus(self, status):
         """
