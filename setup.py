@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="clickatell",
-    version="0.1.0",
+    version="0.1.1",
     author="Chris Brand",
     author_email="webmaster@cainsvault.com",
     keywords=["clickatell","sms"],

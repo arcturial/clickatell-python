@@ -61,7 +61,7 @@ class TransportTest(unittest.TestCase):
             'http://api.clickatell.com/act',
             params={},
             data='{}',
-            headers={'User-Agent': 'ClickatellPython/0.1.0 Python/' + platform.python_version()}
+            headers={'User-Agent': 'ClickatellPython/0.1.1 Python/' + platform.python_version()}
         )
 
 
