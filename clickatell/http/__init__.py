@@ -57,8 +57,8 @@ class Http(Transport):
         # that could not be delivered is different from a failed request...so errors are returned
         # per message. In the case of global failures (like authentication) all messages will contain
         # the specific error as part of the response body.
-        for entry in content:
-            entry = self.merge({'ID': False, 'To': data['to'][0], 'error': False, 'errorCode': False}, entry)
+        for index, entry in enumerate(content):
+            entry = self.merge({'ID': False, 'To': to[index], 'error': False, 'errorCode': False}, entry)
             result.append({
                 'id': entry['ID'],
                 'destination': entry['To'],
